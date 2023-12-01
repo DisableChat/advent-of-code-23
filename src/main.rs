@@ -1,7 +1,7 @@
+use regex::Regex;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
-use regex::{Regex, RegexSet};
 
 fn main() {
     chal_one_pt1();
@@ -10,63 +10,62 @@ fn main() {
 
 fn chal_one_pt1() {
     let mut total_sum: u32 = 0;
-    
+
     // File hosts.txt must exist in the current path
     if let Ok(lines) = read_lines("./input.txt") {
         // Consumes the iterator, returns an (Optional) String
         for line in lines {
             if let Ok(calibration) = line {
-                
                 //Part 1 Regex
                 let re = Regex::new(r"\d").unwrap();
                 let matches: Vec<&str> = re.find_iter(&calibration).map(|s| s.as_str()).collect();
-                
-                let  fmatch = matches.first().unwrap().to_owned().to_string();
-                let  rmatch = matches.last().unwrap().to_owned();
-                
+
+                let fmatch = matches.first().unwrap().to_owned().to_string();
+                let rmatch = matches.last().unwrap().to_owned();
+
                 let sum: u32 = (fmatch + rmatch).parse().unwrap();
                 total_sum = total_sum + sum;
             }
         }
     }
-    println!("total sum: {}", total_sum )
+    println!("total sum: {}", total_sum)
 }
 
 fn chal_one_pt2() {
     let mut total_sum: u32 = 0;
 
     // File hosts.txt must exist in the current path
-    if let Ok(lines) = read_lines("./pt2_input.txt") {
+    if let Ok(lines) = read_lines("./input.txt") {
         // Consumes the iterator, returns an (Optional) String
         for line in lines {
             if let Ok(calibration) = line {
-
                 //Part 2 Regex
                 let rg = regex::Regex::new(r"(twone|oneight|threeight|fiveight|sevenine|nineight|eighthree|eightwo|one|two|three|four|five|six|seven|eight|nine|\d)").unwrap();
                 let matches: Vec<&str> = rg.find_iter(&calibration).map(|s| s.as_str()).collect();
-                
+
                 //Front match
-                let  fmatch = reg_to_num(matches.first().unwrap().to_owned()).to_string();
+                let fmatch = reg_to_num(matches.first().unwrap().to_owned()).to_string();
                 //Rear match
-                let  rmatch = rreg_to_num(matches.last().unwrap().to_owned());
-                
+                let rmatch = rreg_to_num(matches.last().unwrap().to_owned());
+
                 let sum: u32 = (fmatch.clone() + rmatch).parse().unwrap();
                 total_sum = total_sum + sum;
             }
         }
         println!("total sum: {}", total_sum);
     }
-
 }
 // The output is wrapped in a Result to allow matching on errors
 // Returns an Iterator to the Reader of the lines of the file.
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where P: AsRef<Path>, {
+where
+    P: AsRef<Path>,
+{
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
 }
 
-fn reg_to_num(val: &str) -> &str{
+fn reg_to_num(val: &str) -> &str {
     match val {
         "twone" => "2",
         "oneight" => "1",
@@ -89,7 +88,7 @@ fn reg_to_num(val: &str) -> &str{
     }
 }
 
-fn rreg_to_num(val: &str) -> &str{
+fn rreg_to_num(val: &str) -> &str {
     match val {
         "twone" => "1",
         "oneight" => "8",
